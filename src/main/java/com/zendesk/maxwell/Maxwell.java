@@ -224,11 +224,8 @@ public class Maxwell implements Runnable {
 		replicator.runLoop();
 	}
 
-	public static void main(String[] args) {
+	static void startUpMaxwell(MaxwellConfig config,CustomMaxwellBootstrapWrapper wrapper) {
 		try {
-			Logging.setupLogBridging();
-			MaxwellConfig config = new MaxwellConfig(args);
-
 			if ( config.log_level != null )
 				Logging.setLevel(config.log_level);
 
@@ -241,7 +238,7 @@ public class Maxwell implements Runnable {
 					StaticShutdownCallbackRegistry.invoke();
 				}
 			});
-
+			wrapper.scheduledReportMaxStatus();
 			maxwell.start();
 		} catch ( SQLException e ) {
 			// catch SQLException explicitly because we likely don't care about the stacktrace
@@ -257,4 +254,18 @@ public class Maxwell implements Runnable {
 			System.exit(1);
 		}
 	}
+	
+	public static void main(String[] args)
+	{
+		Logging.setupLogBridging();
+		MaxwellConfig config = new MaxwellConfig(args);
+		LOGGER.info(" bootstrap from CustomBootstrap.............................");
+		CustomMaxwellBootstrapWrapper wrapper = new CustomMaxwellBootstrapWrapper(config);
+		if( wrapper.isCanBootstrapMaxwell()==true ) {
+			startUpMaxwell(config,wrapper);
+		}else {
+			wrapper.detectAndWatingBootstrap();
+		}
+	}
+	
 }

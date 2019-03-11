@@ -12,6 +12,8 @@
       <includes>
         <include>bin/*</include>
         <include>config.properties.example</include>
+		<include>config-test.properties</include>
+		<include>config-prod.properties</include>
         <include>kinesis-producer-library.properties.example</include>
         <include>README*</include>
         <include>LICENSE*</include>
